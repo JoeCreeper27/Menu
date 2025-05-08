@@ -297,11 +297,15 @@
 <body>
   <div class="menu-container">
     <div class="file-upload">
-      <h3>上傳菜單Excel檔案</h3>
-      <p>請選擇您的Excel菜單數據檔案</p>
-      <input type="file" id="fileUpload" accept=".xlsx, .xls" style="display: none;">
-      <button class="file-upload-button" onclick="document.getElementById('fileUpload').click()">選擇Excel檔案</button>
-      <p id="fileName" style="margin-top: 10px; font-size: 14px;"></p>
+      <h3>菜單Excel檔案設定</h3>
+      <p>系統會自動讀取 <strong>menu_data.xlsx</strong> 檔案</p>
+      <div style="display: flex; justify-content: space-around; margin-top: 15px;">
+        <button class="file-upload-button" onclick="downloadExcelTemplate()">下載Excel範本</button>
+        <button class="file-upload-button" onclick="loadMenuFromFixedPath()">重新載入菜單</button>
+      </div>
+      <p style="margin-top: 15px; font-size: 14px;">
+        1. 下載Excel範本 → 2. 編輯菜單內容 → 3. 另存為 menu_data.xlsx → 4. 上傳至網站根目錄 → 5. 點擊重新載入
+      </p>
     </div>
     
     <div class="loading" id="loadingIndicator">
@@ -310,7 +314,7 @@
     </div>
     
     <div class="menu-header">
-      <h1 class="menu-title">逅巷 Urban Aelly</h1>
+      <h1 class="menu-title">逅巷 Urban Alley</h1>
       <p class="menu-subtitle">精釀啤酒 × 美食空間</p>
       <div class="craft-beer-icon">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -334,14 +338,14 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   
   <script>
-    document.getElementById('fileUpload').addEventListener('change', handleFileUpload, false);
+    // document.getElementById('fileUpload').addEventListener('change', handleFileUpload, false);
     
     // Sample data structure to use if no file is uploaded
     const sampleMenuData = {
       appetizers: [
         { name: '香酥啤香乳雞', engName: 'Crispy Beer-marinated Chicken', jpName: 'ビールに漬けたサクサクチキン', price: 220, image: '/api/placeholder/400/320' },
         { name: '蒜香辣醬薯條', engName: 'Garlic Spicy Fries', jpName: 'ニンニク辛口フライドポテト', price: 200, image: '/api/placeholder/400/320' },
-        { name: '烤櫛瓜皮', engName: 'Grilled Zucchini Skins', jpName: '焼きズッキーニの皮', price: 200, image: '/api/placeholder/400/320' },
+        { name: '烤櫛瓜', engName: 'Grilled Zucchini', jpName: '焼きズッキーニ', price: 200, image: '/api/placeholder/400/320' },
         { name: '丹尼特製乾咖哩', engName: 'Danny\'s Special Dry Curry', jpName: 'ダニー特製ドライカレー', price: 350, image: '/api/placeholder/400/320' }
       ],
       mainDishes: [
@@ -358,9 +362,8 @@
             '８種のクラフトビールが日替わりで楽しめます - スタッフにお尋ねください'
           ],
           options: [
-            { size: 'Pint (473ml)', price: '180-240' },
-            { size: 'Half Pint (285ml)', price: '120-160' },
-            { size: 'Tasting Flight (4 x 120ml)', price: '320' }
+            { size: 'Pint (473ml)', price: '200-300' },
+            { size: 'Half Pint (285ml)', price: '150-200' }
           ]
         },
         bottledBeer: {
@@ -381,42 +384,88 @@
 
     // Load sample data when page loads
     window.onload = function() {
-      renderMenu(sampleMenuData);
+      loadMenuFromFixedPath();
     };
 
-    function handleFileUpload(e) {
-      const file = e.target.files[0];
-      if (!file) return;
-      
-      document.getElementById('fileName').textContent = file.name;
+    // 讀取固定路徑的Excel檔案
+    function loadMenuFromFixedPath() {
+      const fixedFilePath = 'menu_data.xlsx'; // 固定的檔案路徑
       document.getElementById('loadingIndicator').style.display = 'block';
       
-      const reader = new FileReader();
-      
-      reader.onload = function(e) {
-        try {
-          const data = new Uint8Array(e.target.result);
+      // 使用fetch API讀取檔案
+      fetch(fixedFilePath)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('找不到菜單檔案。請確保 menu_data.xlsx 存在於正確位置。');
+          }
+          return response.arrayBuffer();
+        })
+        .then(arrayBuffer => {
+          const data = new Uint8Array(arrayBuffer);
           const workbook = XLSX.read(data, { type: 'array' });
           
-          // Process the Excel data
+          // 處理Excel數據
           const menuData = processExcelData(workbook);
           
-          // Render the menu with the data
+          // 渲染菜單
           renderMenu(menuData);
-        } catch (error) {
-          console.error('Error processing file:', error);
-          alert('讀取檔案時發生錯誤。請確保您上傳的是有效的Excel檔案。');
-        } finally {
+        })
+        .catch(error => {
+          console.error('讀取檔案錯誤:', error);
+          alert('無法讀取菜單檔案。使用預設菜單。\n錯誤: ' + error.message);
+          // 使用預設數據
+          renderMenu(sampleMenuData);
+        })
+        .finally(() => {
           document.getElementById('loadingIndicator').style.display = 'none';
-        }
-      };
+        });
+    }
+    
+    // 下載範例Excel模板
+    function downloadExcelTemplate() {
+      // 創建一個新的工作簿
+      const wb = XLSX.utils.book_new();
       
-      reader.onerror = function() {
-        document.getElementById('loadingIndicator').style.display = 'none';
-        alert('讀取檔案時發生錯誤。');
-      };
+      // 建立開胃小食工作表數據
+      const appetizerData = [
+        { name: '項目名稱', engName: '英文名稱', jpName: '日文名稱', price: '價格', image: '圖片路徑' },
+        { name: '香酥啤香乳雞', engName: 'Crispy Beer-marinated Chicken', jpName: 'ビールに漬けたサクサクチキン', price: 220, image: '/images/chicken.jpg' },
+        { name: '蒜香辣醬薯條', engName: 'Garlic Spicy Fries', jpName: 'ニンニク辛口フライドポテト', price: 200, image: '/images/fries.jpg' }
+      ];
       
-      reader.readAsArrayBuffer(file);
+      // 建立主食料理工作表數據
+      const mainDishData = [
+        { name: '項目名稱', engName: '英文名稱', jpName: '日文名稱', price: '價格', image: '圖片路徑' },
+        { name: '自製牛仔魚一夜干', engName: 'Homemade Dried Cowfish', jpName: '自家製カウフィッシュの一夜干し', price: 360, image: '/images/fish.jpg' },
+        { name: '起士炸雞翅', engName: 'Cheese Fried Chicken Wings', jpName: 'チーズフライドチキンウィング', price: 220, image: '/images/wings.jpg' }
+      ];
+      
+      // 建立啤酒與葡萄酒工作表數據
+      const beerWineData = [
+        { type: 'draftBeerDesc', description: 'Eight rotating craft beers on tap - ask your server for today\'s selection' },
+        { type: 'draftBeerDesc', description: '八款輪替精釀生啤 - 請向服務人員詢問今日供應' },
+        { type: 'draftBeerDesc', description: '８種のクラフトビールが日替わりで楽しめます - スタッフにお尋ねください' },
+        { type: 'draftBeerOption', size: 'Pint (473ml)', price: '180-240' },
+        { type: 'draftBeerOption', size: 'Half Pint (285ml)', price: '120-160' },
+        { type: 'draftBeerOption', size: 'Tasting Flight (4 x 120ml)', price: '320' },
+        { type: 'bottledBeerDesc', description: 'Selection of local and imported craft beer - see our beer cooler' },
+        { type: 'bottledBeerDesc', description: '精選本地及進口瓶裝精釀 - 歡迎查看啤酒冰櫃' },
+        { type: 'wineOption', size: 'Red / White (Glass)', price: '180' },
+        { type: 'wineOption', size: 'Red / White (Bottle)', price: '880' }
+      ];
+      
+      // 將數據轉換為工作表
+      const wsAppetizers = XLSX.utils.json_to_sheet(appetizerData);
+      const wsMainDishes = XLSX.utils.json_to_sheet(mainDishData);
+      const wsBeerWine = XLSX.utils.json_to_sheet(beerWineData);
+      
+      // 將工作表添加到工作簿
+      XLSX.utils.book_append_sheet(wb, wsAppetizers, 'Appetizers');
+      XLSX.utils.book_append_sheet(wb, wsMainDishes, 'MainDishes');
+      XLSX.utils.book_append_sheet(wb, wsBeerWine, 'BeerWine');
+      
+      // 生成Excel檔案並下載
+      XLSX.writeFile(wb, 'menu_data.xlsx');
     }
 
     function processExcelData(workbook) {
