@@ -343,16 +343,16 @@
     // Sample data structure to use if no file is uploaded
     const sampleMenuData = {
       appetizers: [
-        { name: '香酥啤香乳雞', engName: 'Crispy Beer-marinated Chicken', jpName: 'ビールに漬けたサクサクチキン', price: 220, image: '/pic/pic_1.png' },
-        { name: '蒜香辣醬薯條', engName: 'Garlic Spicy Fries', jpName: 'ニンニク辛口フライドポテト', price: 200, image: '/pic/pic_2.png' },
-        { name: '烤櫛瓜', engName: 'Grilled Zucchini', jpName: '焼きズッキーニ', price: 200, image: '/pic/pic_3.png' },
-        { name: '丹尼特製乾咖哩', engName: 'Danny\'s Special Dry Curry', jpName: 'ダニー特製ドライカレー', price: 350, image: '/pic/pic_4.png' }
+        { name: '香酥啤香乳雞', engName: 'Crispy Beer-marinated Chicken', jpName: 'ビールに漬けたサクサクチキン', price: 220, image: './pic/pic_1.png' },
+        { name: '蒜香辣醬薯條', engName: 'Garlic Spicy Fries', jpName: 'ニンニク辛口フライドポテト', price: 200, image: './pic/pic_2.png' },
+        { name: '烤櫛瓜', engName: 'Grilled Zucchini', jpName: '焼きズッキーニ', price: 200, image: './pic/pic_3.png' },
+        { name: '丹尼特製乾咖哩', engName: 'Danny\'s Special Dry Curry', jpName: 'ダニー特製ドライカレー', price: 350, image: './pic/pic_4.png' }
       ],
       mainDishes: [
-        { name: '自製牛仔魚一夜干', engName: 'Homemade Dried Cowfish', jpName: '自家製カウフィッシュの一夜干し', price: 360, image: '/pic/pic_5.png' },
-        { name: '起士炸雞翅', engName: 'Cheese Fried Chicken Wings', jpName: 'チーズフライドチキンウィング', price: 220, image: '/pic/pic_6.png' },
-        { name: '炸中卷佐塔塔醬', engName: 'Fried Squid with Tartar Sauce', jpName: 'イカフライ タルタルソース添え', price: 320, image: '/pic/pic_7.png' },
-        { name: '清炒義大利麵', engName: 'Sautéed Italian Pasta', jpName: 'あっさりパスタソテー', price: 250, image: '/pic/pic_8.png' }
+        { name: '自製牛仔魚一夜干', engName: 'Homemade Dried Cowfish', jpName: '自家製カウフィッシュの一夜干し', price: 360, image: './pic/pic_5.png' },
+        { name: '起士炸雞翅', engName: 'Cheese Fried Chicken Wings', jpName: 'チーズフライドチキンウィング', price: 220, image: './pic/pic_6.png' },
+        { name: '炸中卷佐塔塔醬', engName: 'Fried Squid with Tartar Sauce', jpName: 'イカフライ タルタルソース添え', price: 320, image: './pic/pic_7.png' },
+        { name: '清炒義大利麵', engName: 'Sautéed Italian Pasta', jpName: 'あっさりパスタソテー', price: 250, image: './pic/pic_8.png' }
       ],
       beerWine: {
         draftBeer: {
@@ -389,7 +389,7 @@
 
     // 讀取固定路徑的Excel檔案
     function loadMenuFromFixedPath() {
-      const fixedFilePath = 'menu_data.xlsx'; // 固定的檔案路徑
+      const fixedFilePath = './menu_data.xlsx'; // 固定的檔案路徑
       document.getElementById('loadingIndicator').style.display = 'block';
       
       // 使用fetch API讀取檔案
