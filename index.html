@@ -297,15 +297,7 @@
 <body>
   <div class="menu-container">
     <div class="file-upload">
-      <h3>菜單Excel檔案設定</h3>
-      <p>系統會自動讀取 <strong>menu_data.xlsx</strong> 檔案</p>
-      <div style="display: flex; justify-content: space-around; margin-top: 15px;">
-        <button class="file-upload-button" onclick="downloadExcelTemplate()">下載Excel範本</button>
-        <button class="file-upload-button" onclick="loadMenuFromFixedPath()">重新載入菜單</button>
-      </div>
-      <p style="margin-top: 15px; font-size: 14px;">
-        1. 下載Excel範本 → 2. 編輯菜單內容 → 3. 另存為 menu_data.xlsx → 4. 上傳至網站根目錄 → 5. 點擊重新載入
-      </p>
+      <button class="file-upload-button" onclick="loadMenuFromFixedPath()">重新載入菜單</button>
     </div>
     
     <div class="loading" id="loadingIndicator">
@@ -346,12 +338,12 @@
         { name: '香酥啤香乳雞', engName: 'Crispy Beer-marinated Chicken', jpName: 'ビールに漬けたサクサクチキン', price: 220, image: './pic/pic_1.png' },
         { name: '蒜香辣醬薯條', engName: 'Garlic Spicy Fries', jpName: 'ニンニク辛口フライドポテト', price: 200, image: './pic/pic_2.png' },
         { name: '烤櫛瓜', engName: 'Grilled Zucchini', jpName: '焼きズッキーニ', price: 200, image: './pic/pic_3.png' },
-        { name: '丹尼特製乾咖哩', engName: 'Danny\'s Special Dry Curry', jpName: 'ダニー特製ドライカレー', price: 350, image: './pic/pic_4.png' }
+        { name: '起士炸雞翅', engName: 'Cheese Fried Chicken Wings', jpName: 'チーズフライドチキンウィング', price: 220, image: './pic/pic_4.png' }
       ],
       mainDishes: [
         { name: '自製牛仔魚一夜干', engName: 'Homemade Dried Cowfish', jpName: '自家製カウフィッシュの一夜干し', price: 360, image: './pic/pic_5.png' },
-        { name: '起士炸雞翅', engName: 'Cheese Fried Chicken Wings', jpName: 'チーズフライドチキンウィング', price: 220, image: './pic/pic_6.png' },
-        { name: '炸中卷佐塔塔醬', engName: 'Fried Squid with Tartar Sauce', jpName: 'イカフライ タルタルソース添え', price: 320, image: './pic/pic_7.png' },
+        { name: '炸中卷佐塔塔醬', engName: 'Fried Squid with Tartar Sauce', jpName: 'イカフライ タルタルソース添え', price: 320, image: './pic/pic_6.png' },
+        { name: '丹尼特製乾咖哩', engName: 'Danny\'s Special Dry Curry', jpName: 'ダニー特製ドライカレー', price: 350, image: './pic/pic_7.png' },
         { name: '清炒義大利麵', engName: 'Sautéed Italian Pasta', jpName: 'あっさりパスタソテー', price: 250, image: './pic/pic_8.png' }
       ],
       beerWine: {
@@ -421,52 +413,6 @@
         });
     }
     
-    // 下載範例Excel模板
-    function downloadExcelTemplate() {
-      // 創建一個新的工作簿
-      const wb = XLSX.utils.book_new();
-      
-      // 建立開胃小食工作表數據
-      const appetizerData = [
-        { name: '項目名稱', engName: '英文名稱', jpName: '日文名稱', price: '價格', image: '圖片路徑' },
-        { name: '香酥啤香乳雞', engName: 'Crispy Beer-marinated Chicken', jpName: 'ビールに漬けたサクサクチキン', price: 220, image: '/images/chicken.jpg' },
-        { name: '蒜香辣醬薯條', engName: 'Garlic Spicy Fries', jpName: 'ニンニク辛口フライドポテト', price: 200, image: '/images/fries.jpg' }
-      ];
-      
-      // 建立主食料理工作表數據
-      const mainDishData = [
-        { name: '項目名稱', engName: '英文名稱', jpName: '日文名稱', price: '價格', image: '圖片路徑' },
-        { name: '自製牛仔魚一夜干', engName: 'Homemade Dried Cowfish', jpName: '自家製カウフィッシュの一夜干し', price: 360, image: '/images/fish.jpg' },
-        { name: '起士炸雞翅', engName: 'Cheese Fried Chicken Wings', jpName: 'チーズフライドチキンウィング', price: 220, image: '/images/wings.jpg' }
-      ];
-      
-      // 建立啤酒與葡萄酒工作表數據
-      const beerWineData = [
-        { type: 'draftBeerDesc', description: 'Eight rotating craft beers on tap - ask your server for today\'s selection' },
-        { type: 'draftBeerDesc', description: '八款輪替精釀生啤 - 請向服務人員詢問今日供應' },
-        { type: 'draftBeerDesc', description: '８種のクラフトビールが日替わりで楽しめます - スタッフにお尋ねください' },
-        { type: 'draftBeerOption', size: 'Pint (473ml)', price: '180-240' },
-        { type: 'draftBeerOption', size: 'Half Pint (285ml)', price: '120-160' },
-        { type: 'draftBeerOption', size: 'Tasting Flight (4 x 120ml)', price: '320' },
-        { type: 'bottledBeerDesc', description: 'Selection of local and imported craft beer - see our beer cooler' },
-        { type: 'bottledBeerDesc', description: '精選本地及進口瓶裝精釀 - 歡迎查看啤酒冰櫃' },
-        { type: 'wineOption', size: 'Red / White (Glass)', price: '180' },
-        { type: 'wineOption', size: 'Red / White (Bottle)', price: '880' }
-      ];
-      
-      // 將數據轉換為工作表
-      const wsAppetizers = XLSX.utils.json_to_sheet(appetizerData);
-      const wsMainDishes = XLSX.utils.json_to_sheet(mainDishData);
-      const wsBeerWine = XLSX.utils.json_to_sheet(beerWineData);
-      
-      // 將工作表添加到工作簿
-      XLSX.utils.book_append_sheet(wb, wsAppetizers, 'Appetizers');
-      XLSX.utils.book_append_sheet(wb, wsMainDishes, 'MainDishes');
-      XLSX.utils.book_append_sheet(wb, wsBeerWine, 'BeerWine');
-      
-      // 生成Excel檔案並下載
-      XLSX.writeFile(wb, 'menu_data.xlsx');
-    }
 
     function processExcelData(workbook) {
       // Expected sheet names and structure
@@ -499,8 +445,9 @@
               engName: row.engName || '',
               jpName: row.jpName || '',
               price: row.price || 0,
-              image: row.image || '/api/placeholder/400/320'
+              image: row.image || './pic/pic_1.png'
             });
+            console.info('add appetizers:', row.name);
           }
         });
       }
@@ -517,8 +464,9 @@
               engName: row.engName || '',
               jpName: row.jpName || '',
               price: row.price || 0,
-              image: row.image || '/api/placeholder/400/320'
+              image: row.image || './pic/pic_1.png'
             });
+            console.info('add mainDishes:', row.name);
           }
         });
       }
