@@ -296,9 +296,9 @@
 </head>
 <body>
   <div class="menu-container">
-    <div class="file-upload">
+<!--     <div class="file-upload">
       <button class="file-upload-button" onclick="loadMenuFromFixedPath()">重新載入菜單</button>
-    </div>
+    </div> -->
     
     <div class="loading" id="loadingIndicator">
       <div class="loading-spinner"></div>
@@ -325,12 +325,8 @@
       <p>一杯一杯と、思い出を醸造する</p>
     </div>
   </div>
-
-  <!-- Load SheetJS -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   
   <script>
-    // document.getElementById('fileUpload').addEventListener('change', handleFileUpload, false);
     
     // Sample data structure to use if no file is uploaded
     const sampleMenuData = {
@@ -381,7 +377,7 @@
 
     // 讀取固定路徑的Excel檔案
     function loadMenuFromFixedPath() {
-      const fixedFilePath = './menu_data.xlsx'; // 固定的檔案路徑
+      const fixedFilePath = './data.json'; // 固定的檔案路徑
       document.getElementById('loadingIndicator').style.display = 'block';
       
       // 使用fetch API讀取檔案
@@ -390,17 +386,13 @@
           if (!response.ok) {
             throw new Error('找不到菜單檔案。請確保 menu_data.xlsx 存在於正確位置。');
           }
-          return response.arrayBuffer();
+          return response.json();
         })
-        .then(arrayBuffer => {
-          const data = new Uint8Array(arrayBuffer);
-          const workbook = XLSX.read(data, { type: 'array' });
-          
-          // 處理Excel數據
-          const menuData = processExcelData(workbook);
+        .then(json => {
+          // const menuData = processData(json);
           
           // 渲染菜單
-          renderMenu(menuData);
+          renderMenu(json);
         })
         .catch(error => {
           console.error('讀取檔案錯誤:', error);
@@ -414,7 +406,7 @@
     }
     
 
-    function processExcelData(workbook) {
+    function processData(json) {
       // Expected sheet names and structure
       const menuData = {
         appetizers: [],
